@@ -4,19 +4,16 @@ import os
 import image
 
 app = Flask(__name__)
-UPLOAD_FOLDER = 'uploads/'
-CONVERTED_FOLDER = 'converted/'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['CONVERTED_FOLDER'] = CONVERTED_FOLDER
+app.config.from_object('config')
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
-    print "loading"
     if request.method == 'POST':
+        # TODO upload image or click facebook button to load profile pic
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -41,6 +38,7 @@ def uploaded_file(filename):
 
 @app.route('/converted/<filename>')
 def converted_file(filename):
+    # TODO write facebook upload logic
     return send_from_directory(app.config['CONVERTED_FOLDER'],
                                filename)
 
